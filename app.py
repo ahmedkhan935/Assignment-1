@@ -21,7 +21,11 @@ def home():
         ]
     })
 
-
+@app.route('/api/items', methods=['GET'])
+def get_items():
+    """Return all items."""
+    return jsonify({"items": items})
+    
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
