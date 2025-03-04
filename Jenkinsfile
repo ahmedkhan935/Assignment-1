@@ -2,7 +2,7 @@ pipeline {
     agent any
     
     environment {
-        DOCKER_HUB_TOKEN = credentials('docker-hub-token')
+        
         APP_NAME = 'mlops-a01'
         DOCKER_IMAGE = "ahmed93560/${APP_NAME}"
         DOCKER_USERNAME = 'ahmed93560'
@@ -29,7 +29,7 @@ pipeline {
         }
                stage('Push Docker Image') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                withCredentials([usernamePassword(credentialsId: 'docker-hub-cred', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     bat 'docker login -u %DOCKER_USER% -p %DOCKER_PASS%'
                     bat "docker push ${DOCKER_USERNAME}/${APP_NAME}:latest"
                 }
