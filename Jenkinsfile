@@ -27,11 +27,11 @@ pipeline {
                 bat "docker tag ${DOCKER_IMAGE} ${DOCKER_USERNAME}/${APP_NAME}:latest"
             }
         }
-        stage('Push Docker Image') {
+               stage('Push Docker Image') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     bat 'docker login -u %DOCKER_USER% -p %DOCKER_PASS%'
-                    bat 'docker push ${DOCKER_IMAGE} ${DOCKER_USERNAME}/${APP_NAME}:latest'
+                    bat "docker push ${DOCKER_USERNAME}/${APP_NAME}:latest"
                 }
             }
         }
