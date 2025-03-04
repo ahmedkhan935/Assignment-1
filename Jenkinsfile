@@ -4,9 +4,9 @@ pipeline {
     environment {
         DOCKER_HUB_TOKEN = credentials('docker-hub-token')
         APP_NAME = 'mlops-a01'
-        DOCKER_IMAGE = "ahmed93560/${APP_NAME}:${env.BUILD_NUMBER}"
+        DOCKER_IMAGE = "ahmed93560/${APP_NAME}"
         DOCKER_USERNAME = 'ahmed93560'
-        ADMIN_EMAIL = 'ahmedkhanraza935@gmail.com'
+        ADMIN_EMAIL = 'khanahmed6965@gmail.com'
     }
     
     stages {
@@ -22,13 +22,17 @@ pipeline {
             }
         }
         
-        stage('Push to Docker Hub') {
+        stage('Tag Docker Image') {
             steps {
-                bat "echo %DOCKER_HUB_TOKEN% | docker login -u %DOCKER_USERNAME% --password-stdin"
-                bat "docker push ${DOCKER_IMAGE}"
-                bat "docker tag ${DOCKER_IMAGE} %DOCKER_USERNAME%/${APP_NAME}:latest"
-                bat "docker push %DOCKER_USERNAME%/${APP_NAME}:latest"
-                bat "docker logout"
+                bat "docker tag ${DOCKER_IMAGE} ${DOCKER_USERNAME}/${APP_NAME}:latest"
+            }
+        }
+        stage('Push Docker Image') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    bat 'docker login -u %DOCKER_USER% -p %DOCKER_PASS%'
+                    bat 'docker push ${DOCKER_IMAGE} ${DOCKER_USERNAME}/${APP_NAME}:latest'
+                }
             }
         }
     }
